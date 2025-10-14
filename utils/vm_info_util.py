@@ -4,7 +4,7 @@ import json
 from proxmoxer import ProxmoxAPI
 from proxmoxer import ResourceException
 
-from utils.UtilInterface import UtilInterface
+from utils.util_interface import UtilInterface
 
 
 class VmInfoUtil(UtilInterface):

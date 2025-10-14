@@ -3,7 +3,7 @@ import asyncio
 
 from proxmoxer import ProxmoxAPI
 
-from utils.UtilInterface import UtilInterface
+from utils.util_interface import UtilInterface
 
 
 class VlanUtil(UtilInterface):
