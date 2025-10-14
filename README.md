@@ -40,6 +40,9 @@ The following environment variables must be set before running the utilities:
 - `PVE_TOKEN_VALUE`: The secret value of the API Token.
 
 You can set these environment variables in your shell or add them to a `.env` file in the root of the project.
+For convenience, you can copy the provided `.env.template` file to `.env` and fill in the required values.
+
+```bash
 
 ## Usage
 
