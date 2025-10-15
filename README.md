@@ -42,8 +42,6 @@ The following environment variables must be set before running the utilities:
 You can set these environment variables in your shell or add them to a `.env` file in the root of the project.
 For convenience, you can copy the provided `.env.template` file to `.env` and fill in the required values.
 
-```bash
-
 ## Usage
 
 For usage instructions, see `python proxmox_utils.py --help`.
