@@ -23,8 +23,8 @@ class VmInfoUtil(UtilInterface):
         uuid_parser = sub_parsers.add_parser(
             VmInfoUtil.COMMAND,
             prog="Proxmox VM Info Getter",
-            description="A program for getting info of a VM on a Proxmox VE server",
-            help="Get info of a VM on a Proxmox VE server"
+            description="Get information on a specified VM",
+            help="Get VM info"
         )
 
         group = uuid_parser.add_mutually_exclusive_group(required=True)

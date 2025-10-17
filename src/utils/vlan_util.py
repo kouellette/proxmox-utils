@@ -18,8 +18,8 @@ class VlanUtil(UtilInterface):
         vlan_parser = sub_parsers.add_parser(
             VlanUtil.COMMAND,
             prog="Proxmox VLAN Auditor",
-            description="A program for auditing VLAN usage in a Proxmox VE deployment",
-            help="A program for auditing VLAN usage in a Proxmox VE deployment"
+            description="Audit VLAN usage across VMs and containers",
+            help="Audit VLAN usage"
         )
         vlan_parser.add_argument(
             "-m", "--mapping",
