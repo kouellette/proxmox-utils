@@ -5,20 +5,11 @@ Because of this, these utilities can be run from any machine that has connectivi
 
 ## Setup
 
-### Packages
+### Install Hatch
 
-To use these utilities, you need Python installed and need to install the required packages. The recommended way
-is to use a virtual environment. `venv` is the built-in virtual environment manager, so the following example uses it, 
-but you can replace it with your favorite virtual environment manager.
+This project uses [Hatch](https://hatch.pypa.io/) for environment and dependency management. 
 
-```bash
-# Create a virtual environment in a folder named 'venv'
-python3 -m venv venv
-# Activate the virtual environment 
-source venv/bin/activate
-# Install the required packages
-pip install -r requirements.txt
-```
+Install Hatch following the [installation guide](https://hatch.pypa.io/latest/install/).
 
 ### Proxmox API Token
 
@@ -40,13 +31,23 @@ The following environment variables must be set before running the utilities:
 - `PVE_TOKEN_NAME`: The name/ID of the API Token created in the Proxmox web interface.
 - `PVE_TOKEN_VALUE`: The secret value of the API Token.
 
-You can set these environment variables in your shell or add them to a file named `.env` in the root of the project.
-For convenience, you can copy the provided `.env.template` file to `.env` and fill in the required values.
+You can set these environment variables in your shell or add them to a `.env` file.
+For convenience, you can copy the provided `.env.template` file and fill in the required values.
+`proxmox_utils` will automatically load the `.env` file if it exists in the current working directory,
+or you can specify the path to the `.env` file using the `-e` or `--env` option.
 
 ## Usage
 
+These utilities should be run via hatch:
+
 ```aiignore
-usage: Proxmox Utilities [-h] {get-vm-info,vlan-audit} ...
+hatch run python -m proxmox_utils <args>
+```
+
+```aiignore
+$ hatch run python -m proxmox_utils --help
+
+usage: Proxmox Utilities [-h] [-e ENV] {get-vm-info,vlan-audit} ...
 
 A set of utilities for working with Proxmox VE deployments
 
@@ -58,6 +59,7 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
+  -e, --env ENV         Path to a .env file to load environment variables from. Defaults to .env in the current directory.```
 ```
 
 ### Utilities
@@ -65,6 +67,8 @@ options:
 ### `get-vm-info`
 
 ```aiignore
+$ hatch run python -m proxmox_utils get-vm-info --help
+
 usage: Proxmox VM Info Getter [-h] (-n NAME | -i ID) [-u]
 
 Get information on a specified VM
@@ -79,6 +83,8 @@ options:
 ### `vlan-audit`
 
 ```aiignore
+$ hatch run python -m proxmox_utils vlan-audit --help
+
 usage: Proxmox VLAN Auditor [-h] [-m {vm,vlan}] [-o {text,json,csv}] [-v VLANS]
 
 Audit VLAN usage across VMs and containers

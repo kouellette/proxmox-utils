@@ -1,0 +1,68 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "proxmox-utils"
+dynamic = ["version"]
+description = 'Utilities for working with Proxmox VE deployments via the Proxmox API'
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "Kyle Ouellette", email = "kouellette@iol.unh.edu" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+    "proxmoxer",
+    "requests",
+    "python-dotenv"
+]
+
+[project.urls]
+Documentation = "https://github.com/kouellette/proxmox-utils#readme"
+Issues = "https://github.com/kouellette/proxmox-utils/issues"
+Source = "https://github.com/kouellette/proxmox-utils"
+
+[tool.hatch.version]
+path = "src/proxmox_utils/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/proxmox_utils tests}"
+
+[tool.coverage.run]
+source_pkgs = ["proxmox_utils", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/proxmox_utils/__about__.py",
+]
+
+[tool.coverage.paths]
+proxmox_utils = ["src/proxmox_utils", "*/proxmox-utils/src/proxmox_utils"]
+tests = ["tests", "*/proxmox-utils/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.ruff.lint]
+ignore = ["T201"]

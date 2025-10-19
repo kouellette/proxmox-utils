@@ -1,10 +1,9 @@
-import re
 import json
+import re
 
-from proxmoxer import ProxmoxAPI
-from proxmoxer import ResourceException
+from proxmoxer import ProxmoxAPI, ResourceException
 
-from utils.util_interface import UtilInterface
+from .util_interface import UtilInterface  # noqa: TID252
 
 
 class VmInfoUtil(UtilInterface):
@@ -24,18 +23,14 @@ class VmInfoUtil(UtilInterface):
             VmInfoUtil.COMMAND,
             prog="Proxmox VM Info Getter",
             description="Get information on a specified VM",
-            help="Get VM info"
+            help="Get VM info",
         )
 
         group = uuid_parser.add_mutually_exclusive_group(required=True)
         group.add_argument("-n", "--name", help="The name of the VM")
         group.add_argument("-i", "--id", help="The ID of the VM")
 
-        uuid_parser.add_argument(
-            "-u", "--uuid",
-            action="store_true",
-            help="Return only the VM's UUID"
-        )
+        uuid_parser.add_argument("-u", "--uuid", action="store_true", help="Return only the VM's UUID")
 
     async def exec(self):
         try:
@@ -52,22 +47,18 @@ class VmInfoUtil(UtilInterface):
                     print(f"VM with name [{self.args.name}] not found")
                 return
 
-            config = (
-                self.proxmox
-                .nodes(vm[VmInfoUtil.NODE_FIELD])
-                .qemu(vm[VmInfoUtil.VMID_FIELD])
-                .config
-                .get()
-            )
+            config = self.proxmox.nodes(vm[VmInfoUtil.NODE_FIELD]).qemu(vm[VmInfoUtil.VMID_FIELD]).config.get()
             if self.args.uuid:
                 print(config.get(VmInfoUtil.UUID_FIELD, "VM UUID not found"))
             else:
                 print(json.dumps(config, indent=2))
         except ResourceException as exception:
-            print(exception)
+            print(f"Failed to retrieve VM configuration for VM ID [{self.args.id}]: {exception}")
             if re.match("Configuration file .* does not exist", exception.content):
-                print("Hint: This error likely means that the resource with the provided "
-                      "ID/name is an LXC rather than a VM.")
+                print(
+                    "Hint: This error likely means that the resource with the provided "
+                    "ID/name is an LXC rather than a VM."
+                )
         except ValueError:
             print(f"Invalid VM ID [{self.args.id}]. Must be a number")
 

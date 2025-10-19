@@ -1,9 +1,9 @@
-import json
 import asyncio
+import json
 
 from proxmoxer import ProxmoxAPI
 
-from utils.util_interface import UtilInterface
+from .util_interface import UtilInterface  # noqa: TID252
 
 
 class VlanUtil(UtilInterface):
@@ -19,24 +19,27 @@ class VlanUtil(UtilInterface):
             VlanUtil.COMMAND,
             prog="Proxmox VLAN Auditor",
             description="Audit VLAN usage across VMs and containers",
-            help="Audit VLAN usage"
+            help="Audit VLAN usage",
         )
         vlan_parser.add_argument(
-            "-m", "--mapping",
+            "-m",
+            "--mapping",
             choices=["vm", "vlan"],
             default="vm",
-            help="The mapping to use. vm = VM to VLAN, vlan = VLAN to VM. Default: %(default)s"
+            help="The mapping to use. vm = VM to VLAN, vlan = VLAN to VM. Default: %(default)s",
         )
         vlan_parser.add_argument(
-            "-o", "--output",
+            "-o",
+            "--output",
             choices=["text", "json", "csv"],
             default="text",
-            help="The output format. text = default, json = JSON, csv = CSV. Default: %(default)s"
+            help="The output format. text = default, json = JSON, csv = CSV. Default: %(default)s",
         )
         vlan_parser.add_argument(
-            "-v", "--vlans",
+            "-v",
+            "--vlans",
             help="A comma-separated list of VLAN IDs to filter by. "
-                 "Supplying this option defaults to vlan mapping (i.e., `--mapping vlan`)."
+            "Supplying this option defaults to vlan mapping (i.e., `--mapping vlan`).",
         )
 
     async def get_vm_info(self, node, vm_type, vm_id, name):
@@ -45,7 +48,8 @@ class VlanUtil(UtilInterface):
         elif vm_type == "lxc":
             vm_config = self.proxmox.nodes(node).lxc(vm_id).config.get()
         else:
-            raise ValueError(f"Unknown VM type: {vm_type}")
+            error_msg = f"Unknown VM type: {vm_type}"
+            raise ValueError(error_msg)
 
         vlans = []
         for key, value in vm_config.items():
@@ -57,11 +61,7 @@ class VlanUtil(UtilInterface):
                 if config[0] == "tag":
                     vlans.append(config[1])
 
-        return {
-            "name": name,
-            "id": vm_id,
-            "vlans": vlans
-        }
+        return {"name": name, "id": vm_id, "vlans": vlans}
 
     def print_vm_infos(self, vm_infos):
         match self.args.output:
@@ -73,7 +73,7 @@ class VlanUtil(UtilInterface):
             case "csv":
                 print("id,name,vlans")
                 for vm_info in vm_infos:
-                    print(f"{vm_info["id"]},{vm_info["name"]},[{",".join(vm_info["vlans"])}]")
+                    print(f"{vm_info["id"]},{vm_info["name"]},[{','.join(vm_info["vlans"])}]")
 
     def get_vlan_infos(self, vm_infos):
         vlan_mapping = {}
@@ -94,13 +94,12 @@ class VlanUtil(UtilInterface):
             case "csv":
                 print("vlan,vms")
                 for vlan, vm_names in vlan_mapping.items():
-                    print(f"{vlan},[{",".join(vm_names)}]")
+                    print(f"{vlan},[{','.join(vm_names)}]")
 
     async def exec(self):
         futures = []
         for resource in self.proxmox.cluster.resources.get(type="vm"):
-            vm_info_coroutine = self.get_vm_info(resource["node"], resource["type"],
-                                                 resource["vmid"], resource["name"])
+            vm_info_coroutine = self.get_vm_info(resource["node"], resource["type"], resource["vmid"], resource["name"])
             future = asyncio.create_task(vm_info_coroutine)
             futures.append(future)
 
